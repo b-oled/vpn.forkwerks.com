@@ -1,0 +1,17 @@
+---
+# file: roles/mariadb/tasks/main.yml
+# mariadb
+- name: install mariadb
+  yum:
+    name: mariadb-server
+    state: present
+
+- name: enable mariadb service
+  systemd:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: rebuild grub config
+  command: "grub2-mkconfig --output /etc/grub2.cfg"
+  when: grub.changed

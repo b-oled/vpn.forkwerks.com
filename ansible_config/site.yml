@@ -1,0 +1,7 @@
+---
+# file: site.yml
+
+- hosts: nuc_server
+  roles:
+    - common
+    - dracut_ssh_host

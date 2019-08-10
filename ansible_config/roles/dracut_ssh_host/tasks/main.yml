@@ -1,0 +1,24 @@
+---
+# file: roles/dracut_ssh_host/tasks/main.yml
+# dracut
+- name: add dracut ssh repository
+  shell: yum-config-manager --add-repo= https://copr.fedorainfracloud.org/coprs/rbu/dracut-crypt-ssh/repo/epel-7/rbu-dracut-crypt-ssh-epel-7.repo
+  args:
+    creates: /etc/yum.repos.d/rbu-dracut-crypt-ssh-epel-7.repo 
+
+- name: install dracut ssh rpm
+  yum:
+    name: dracut-crypt-ssh
+    state: present
+
+- name: enable network access during boot
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^(GRUB_CMDLINE_LINUX.*)(quiet)"$'
+    line: '\1\2 rd.neednet=1 ip=dhcp"'
+    backrefs: yes
+  register: grub
+
+- name: rebuild grub config
+  command: "grub2-mkconfig --output /etc/grub2-efi.cfg"
+  when: grub.changed
