@@ -1,0 +1,7 @@
+---
+# file: roles/nodejs/tasks/main.yml
+# nodejs
+- name: install nodejs
+  yum:
+    name: nodejs
+    state: present

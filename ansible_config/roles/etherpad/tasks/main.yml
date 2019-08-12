@@ -1,0 +1,29 @@
+---
+# file: roles/etherpad/tasks/main.yml
+# etherpad
+- name: create etherpad user
+  user:
+    name: etherpad
+    shell: /bin/bash
+    home: /opt/etherpad
+
+- name: set directory permissions
+  file:
+    path: /opt/etherpad
+    state: directory
+    mode: '0755'
+
+- name: clone etherpad source
+  become: yes
+  become_user: etherpad
+  git:
+    repo: 'https://github.com/ether/etherpad-lite.git'
+    dest: /opt/etherpad/etherpad-lite
+
+- name: copy nginx config
+  copy:
+    src: 'files/pad.vpn.forkwerks.com.conf'
+    dest: '/etc/nginx/conf.d/pad.vpn.forkwerks.com.conf'
+    owner: root
+    group: root
+    mode: '0644'
